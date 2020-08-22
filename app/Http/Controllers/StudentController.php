@@ -127,7 +127,7 @@ class StudentController extends Controller
            ->orwhere( 'status', $status )
            ->paginate(3);
         }
-       return view('search')->with('students', $students);
+       return view('allStudent')->with('students', $students);
     }
 
 

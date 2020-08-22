@@ -6,7 +6,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                <h4>All Student</h4>
+                <a href="{{url('/')}}"> <h4>All Student</h4></a>
                 <form class="form-inline my-2 my-lg-0" action="{{route('student.search')}}" method="post">
                     @csrf
                     <div class="form-group">
