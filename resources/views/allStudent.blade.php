@@ -7,8 +7,8 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                 <a href="{{url('/')}}"> <h4>All Student</h4></a>
-                <form class="form-inline my-2 my-lg-0" action="{{route('student.search')}}" method="post">
-                    @csrf
+                <form class="form-inline my-2 my-lg-0" action="{{route('search')}}" method="get">
+                
                     <div class="form-group">
                         <select name="gender" id="gender">
                         <option value="">Genger</option>
@@ -30,7 +30,7 @@
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                 </form>
 
-                <a href="{{url('student/create')}}" class="btn btn-primary">+Add Student</a>
+                <a href="{{route('student.create')}}" class="btn btn-primary">+Add Student</a>
 
                 </div>
 
@@ -62,10 +62,14 @@
                            @endif
                            </td>
                            <td>
-                            <a href="{{route('student.edit',['id'=>$student->id])}} " class="btn btn-primary btn-sm">Edit</a>
-                            <a href="{{route('student.destroy',['id'=>$student->id])}}" class="btn btn-danger btn-sm">Delete</a>
-
-
+                             <div class="d-flex">
+                            <a href="{{route('student.edit',$student->id)}}" class="btn btn-primary btn-sm mr-2">Edit</a>
+                            <form action="{{route('student.destroy',$student->id)}}" method="POST" >
+                                @csrf
+                                @method('DELETE')
+                            <button class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                        </div> 
                            </td>
                        </tr>
                        @endforeach

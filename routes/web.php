@@ -22,13 +22,6 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::resource('/student', 'StudentController');
 
-Route::post('/student/search', 'StudentController@search')->name('student.search');
+Route::get('/search', 'StudentController@search')->name('search');
 
-Route::post('/student/create/insert', 'StudentController@store')->name('student.insert');
-
-Route::get('/student/edit/{id}', 'StudentController@edit')->name('student.edit');
-
-Route::post('/student/update/{id}', 'StudentController@update')->name('student.update');
-
-Route::get('/student/destroy/{id}', 'StudentController@destroy')->name('student.destroy');
 

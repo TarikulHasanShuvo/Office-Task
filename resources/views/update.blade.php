@@ -13,8 +13,9 @@
 
                 <div class="card-body">
 
-                    <form action="{{route('student.update',['id'=>$students->id])}}" method="post">
+                    <form action="{{route('student.update',$students->id)}}" method="post">
                     @csrf
+                    @method('PUT')
                     <div class="form-group">
 
                         <label for="name">Name</label>

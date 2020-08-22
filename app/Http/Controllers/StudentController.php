@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 use session;
-use App\student;
+use App\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 
@@ -15,7 +15,7 @@ class StudentController extends Controller
      */
     public function index()
     {
-        $students= student::paginate(3);
+        $students= Student::paginate(3);
 
        return view('allStudent')->with('students',$students);
     }
@@ -38,7 +38,12 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-            $data = new student;
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required',
+
+        ]);
+            $data = new Student;
             $data->name= $request->name;
             $data->email= $request->email;
             $data->gender= $request->gender;
@@ -53,10 +58,10 @@ class StudentController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\student  $student
+     * @param  \App\Student $student
      * @return \Illuminate\Http\Response
      */
-    public function show(student $student)
+    public function show(Student $student)
     {
         //
     }
@@ -64,27 +69,26 @@ class StudentController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\student  $student
+     * @param  \App\Student $student
      * @return \Illuminate\Http\Response
      */
-    public function edit(student $student,$id)
+    public function edit(Student $student)
     {
 
-        $students= student::find($id);
-        return view('update')->with('students',$students);
+       // $students= Student::find($id);
+        return view('update')->with('students',$student);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\student  $student
+     * @param  \App\Student  $student
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, student $student,$id)
-    {
-         $student=student::find($id);
-        $student->name = $request->name;
+    public function update(Request $request, Student $student)
+    { 
+       $student->name = $request->name;
        $student->email= $request->email;
        $student->gender= $request->gender;
        $student->status= $request->status;
@@ -96,12 +100,12 @@ class StudentController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\student  $student
+     * @param  \App\Student  $student
      * @return \Illuminate\Http\Response
      */
-    public function destroy(student $student,$id)
+    public function destroy(student $student)
     {
-        $student=student::find($id);
+     //return   $students=Student::find($student);
         $student->delete();
 
         return redirect()->back();
@@ -109,25 +113,39 @@ class StudentController extends Controller
 
     }
 
-    public function search(Request $req)
+    public function search(Request $request)
     {
-        $name=$req->search;
-        $gender=$req->gender;
-        $status=$req->status;
+        
 
-    
-        if($name)
-        {
-       $students = student::where ( 'name', 'LIKE', '%' . $name . '%' )
-       ->orWhere ( 'email', 'LIKE', '%' . $name . '%' )
-       ->paginate(3);
-        }
-        else{
-            $students = student::where ( 'gender','=', $gender )
-           ->orwhere( 'status', $status )
-           ->paginate(3);
-        }
-       return view('allStudent')->with('students', $students);
+        $name=$request->search;
+        $gender=$request->gender;
+        $status=$request->status;
+
+  
+  /*    $students =  Student::where ( 'name', 'LIKE', '%' . $name . '%' )
+                  ->orWhere ( 'email', 'LIKE', '%' . $name . '%' )
+                  ->union(Student::where( 'gender', $gender ))
+                  ->union(Student::where ( 'status', $status ))
+                  ->orderBy('name', 'asc')
+                  ->paginate(3);
+      */
+$result = Student::query();
+
+if (!empty($name)) {
+    $result = $result->where ( 'name', 'LIKE', '%' . $name . '%' )
+    ->orWhere ( 'email', 'LIKE', '%' . $name . '%' );
+}
+if (!empty($gender)) {
+    $result = $result->where('gender', $gender);
+}  
+if (!empty($status)) {
+    $result = $result->where('status', $status);
+} 
+$result = $result->paginate(3);  
+     
+           
+        
+       return view('allStudent')->with('students', $result);
     }
 
 

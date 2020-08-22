@@ -13,18 +13,25 @@
 
                 <div class="card-body">
 
-                    <form action="{{route('student.insert')}}" method="post">
+                    <form action="{{route('student.store')}}" method="post">
                     @csrf
                     <div class="form-group">
                        
                         <label for="name">Name</label>
-                        <input type="text" class="form-control" name="name" placeholder="Name" required>
+                        <input type="text" class="form-control" name="name" placeholder="Name">
                          </div>
+                         @error('name')
+                             <div class="alert alert-danger">{{ $message }}</div>
+                            @enderror
 
                          <div class="form-group">
                         <label for="email">Email</label>
-                        <input type="eamil" class="form-control" name="email" placeholder="Enter eamil"required>
+                        <input type="eamil" class="form-control" name="email" placeholder="Enter email">
                          </div>
+
+                         @error('email')
+                         <div class="alert alert-danger">{{ $message }}</div>
+                        @enderror
 
                          <div class="form-group">
                         <label for="gender">Gender</label>
