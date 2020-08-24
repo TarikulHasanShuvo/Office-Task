@@ -15,7 +15,7 @@ class StudentController extends Controller
      */
     public function index()
     {
-        $students= Student::paginate(3);
+        $students= Student::paginate(10);
 
        return view('allStudent')->with('students',$students);
     }
@@ -88,6 +88,11 @@ class StudentController extends Controller
      */
     public function update(Request $request, Student $student)
     { 
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required',
+
+        ]);
        $student->name = $request->name;
        $student->email= $request->email;
        $student->gender= $request->gender;
@@ -141,7 +146,7 @@ if (!empty($gender)) {
 if (!empty($status)) {
     $result = $result->where('status', $status);
 } 
-$result = $result->paginate(3);  
+$result = $result->paginate(10);  
      
            
         

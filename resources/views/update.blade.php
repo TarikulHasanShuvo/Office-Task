@@ -21,11 +21,17 @@
                         <label for="name">Name</label>
                     <input type="text" class="form-control" name="name" placeholder="Name" value="{{ $students->name}}">
                          </div>
+                         @error('name')
+                             <div class="alert alert-danger">{{ $message }}</div>
+                            @enderror
 
                          <div class="form-group">
-                        <label for="email">eamil</label>
-                        <input type="eamil" class="form-control" name="email" placeholder="Enter eamil" value="{{ $students->email}}">
+                        <label for="email">email</label>
+                        <input type="email" class="form-control" name="email" placeholder="Enter Email" value="{{ $students->email}}">
                          </div>
+                         @error('email')
+                             <div class="alert alert-danger">{{ $message }}</div>
+                            @enderror
 
                          <div class="form-group">
                         <label for="gender">Gender</label>

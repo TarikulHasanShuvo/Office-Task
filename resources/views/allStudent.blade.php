@@ -58,7 +58,7 @@
                         <td>  @if($student->status==1)
                             <span Class="btn btn-success btn-sm">Active</span>
                            @else  
-                           <span Class="btn btn-info btn-sm">Deactive</span>
+                           <span Class="btn btn-danger btn-sm">Deactive</span>
                            @endif
                            </td>
                            <td>
