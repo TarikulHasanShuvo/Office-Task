@@ -5,6 +5,7 @@ use session;
 use App\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class StudentController extends Controller
 {
@@ -13,11 +14,28 @@ class StudentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        $students= Student::paginate(10);
+    public function index(Request $request)
+    {     
+     
 
-       return view('allStudent')->with('students',$students);
+   
+        $result = Student::query();
+
+        if (!empty($request->search)) {
+            $result = $result->where( function($q) use($request) {
+                $q->where ( 'name', 'LIKE', '%' . $request->search . '%' )
+                ->orWhere ( 'email', 'LIKE', '%' . $request->search . '%' );
+            });
+        }
+        if (!empty($request->gender)) {
+            $result = $result->where('gender', $request->gender);
+        }  
+        if (!empty($request->status)) {
+            $result = $result->where('status', $request->status);
+        } 
+        $result = $result->paginate(2);  
+            
+       return view('allStudent')->with('students', $result);
     }
 
     /**
@@ -43,16 +61,15 @@ class StudentController extends Controller
             'email' => 'required',
 
         ]);
-            $data = new Student;
-            $data->name= $request->name;
-            $data->email= $request->email;
-            $data->gender= $request->gender;
-             $data->status= $request->status;
-             $data->save();
 
-
-     return redirect()->back();
-
+        $data = new Student;
+        $data->name= $request->name;
+        $data->email= $request->email;
+        $data->gender= $request->gender;
+        $data->status= $request->status;
+        $data->save();
+        toast('Data Insert Successfully ','success');
+        return redirect()->back();
     }
 
     /**
@@ -74,8 +91,6 @@ class StudentController extends Controller
      */
     public function edit(Student $student)
     {
-
-       // $students= Student::find($id);
         return view('update')->with('students',$student);
     }
 
@@ -93,12 +108,13 @@ class StudentController extends Controller
             'email' => 'required',
 
         ]);
-       $student->name = $request->name;
-       $student->email= $request->email;
-       $student->gender= $request->gender;
-       $student->status= $request->status;
-       $student->save();
 
+        $student->name = $request->name;
+        $student->email= $request->email;
+        $student->gender= $request->gender;
+        $student->status= $request->status;
+        $student->save();
+        toast('Data Update Successfully ','success');
        return redirect()->back();
     }
 
@@ -110,49 +126,7 @@ class StudentController extends Controller
      */
     public function destroy(student $student)
     {
-     //return   $students=Student::find($student);
         $student->delete();
-
         return redirect()->back();
-
-
     }
-
-    public function search(Request $request)
-    {
-        
-
-        $name=$request->search;
-        $gender=$request->gender;
-        $status=$request->status;
-
-  
-  /*    $students =  Student::where ( 'name', 'LIKE', '%' . $name . '%' )
-                  ->orWhere ( 'email', 'LIKE', '%' . $name . '%' )
-                  ->union(Student::where( 'gender', $gender ))
-                  ->union(Student::where ( 'status', $status ))
-                  ->orderBy('name', 'asc')
-                  ->paginate(3);
-      */
-$result = Student::query();
-
-if (!empty($name)) {
-    $result = $result->where ( 'name', 'LIKE', '%' . $name . '%' )
-    ->orWhere ( 'email', 'LIKE', '%' . $name . '%' );
-}
-if (!empty($gender)) {
-    $result = $result->where('gender', $gender);
-}  
-if (!empty($status)) {
-    $result = $result->where('status', $status);
-} 
-$result = $result->paginate(10);  
-     
-           
-        
-       return view('allStudent')->with('students', $result);
-    }
-
-
-
 }
