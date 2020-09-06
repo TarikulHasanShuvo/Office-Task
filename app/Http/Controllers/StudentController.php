@@ -19,23 +19,9 @@ class StudentController extends Controller
      
 
    
-        $result = Student::query();
-
-        if (!empty($request->search)) {
-            $result = $result->where( function($q) use($request) {
-                $q->where ( 'name', 'LIKE', '%' . $request->search . '%' )
-                ->orWhere ( 'email', 'LIKE', '%' . $request->search . '%' );
-            });
-        }
-        if (!empty($request->gender)) {
-            $result = $result->where('gender', $request->gender);
-        }  
-        if (!empty($request->status)) {
-            $result = $result->where('status', $request->status);
-        } 
-        $result = $result->paginate(2);  
+        $result = Student::paginate(15);  
             
-       return view('allStudent')->with('students', $result);
+       return view('welcome')->with('students', $result);
     }
 
     /**
@@ -65,11 +51,9 @@ class StudentController extends Controller
         $data = new Student;
         $data->name= $request->name;
         $data->email= $request->email;
-        $data->gender= $request->gender;
-        $data->status= $request->status;
         $data->save();
         toast('Data Insert Successfully ','success');
-        return redirect()->back();
+        return response()->json($data,200);
     }
 
     /**
@@ -89,9 +73,10 @@ class StudentController extends Controller
      * @param  \App\Student $student
      * @return \Illuminate\Http\Response
      */
-    public function edit(Student $student)
+    public function edit($id)
     {
-        return view('update')->with('students',$student);
+        $result = Student::find($id);
+        return response()->json($result);
     }
 
     /**
@@ -101,21 +86,13 @@ class StudentController extends Controller
      * @param  \App\Student  $student
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Student $student)
-    { 
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required',
-
-        ]);
-
+    public function update(Request $request,$id)
+    {
+        $student = Student::find($id);
         $student->name = $request->name;
         $student->email= $request->email;
-        $student->gender= $request->gender;
-        $student->status= $request->status;
         $student->save();
-        toast('Data Update Successfully ','success');
-       return redirect()->back();
+       return response()->json($student);
     }
 
     /**
@@ -124,9 +101,10 @@ class StudentController extends Controller
      * @param  \App\Student  $student
      * @return \Illuminate\Http\Response
      */
-    public function destroy(student $student)
-    {
-        $student->delete();
-        return redirect()->back();
+    public function destroy($id)
+    { 
+         $student = Student::find($id);
+         $student->delete();
+        return response()->json($student);
     }
 }
